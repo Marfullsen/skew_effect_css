@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directional Skew Transitions</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            gap: 20px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 300px;
+            perspective: 2000px;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.45, 0.25, 0.3, 1.5);
+        }
+
+        .card-content {
+            text-align: center;
+            transform: skewX(0);
+        }
+
+        h2 {
+            color: white;
+            margin: 0 0 10px;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        p {
+            color: white;
+            margin: 0;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: inherit;
+            border-radius: inherit;
+            filter: blur(20px);
+            opacity: 0.7;
+            z-index: -1;
+            transform: scale(0.95);
+            transition: 0.3s;
+        }
+
+        .card.move-right {
+            transform: translateX(100px) skewX(-15deg);
+        }
+
+        .card.move-left {
+            transform: translateX(-100px) skewX(15deg);
+        }
+
+        .card:hover {
+            transform: scale(1.05) translateX(0) skewX(0);
+        }
+
+        .card.move-right:hover {
+            transform: translateX(100px) skewX(-15deg) scale(1.05);
+        }
+
+        .card.move-left:hover {
+            transform: translateX(-100px) skewX(15deg) scale(1.05);
+        }
+
+        .card:hover::before {
+            filter: blur(30px);
+            transform: scale(1.05);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 25px;
+            background: #ff6b6b;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background: #feca57;
+            transform: scale(1.05);
+        }
+
+        @keyframes speed-lines {
+            0% { transform: translateX(-200%) scaleX(4); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: translateX(200%) scaleX(4); opacity: 0; }
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 200%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: speed-lines 0.8s infinite linear;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card.move-right::after,
+        .card.move-left::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <div class="card" id="animatedCard">
+            <div class="card-content">
+                <h2>Bip Bip!</h2>
+                <p>Meep Meep!</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="moveLeft()">← Left</button>
+        <button onclick="moveRight()">Right →</button>
+    </div>
+
+    <script>
+        const card = document.getElementById('animatedCard');
+
+        function moveRight() {
+            card.classList.remove('move-left');
+            card.classList.add('move-right');
+        }
+
+        function moveLeft() {
+            card.classList.remove('move-right');
+            card.classList.add('move-left');
+        }
+    </script>
+</body>
+</html>
